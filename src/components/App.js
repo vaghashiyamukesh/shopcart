@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import './App.css';
+import '../App.css';
 
 // child components
-import Header from "./components/Header";
-import ProductList from "./components/ProductList";
+import Header from "./Header";
+import ProductList from "./ProductList";
 
 class App extends Component {
   constructor(props) {
