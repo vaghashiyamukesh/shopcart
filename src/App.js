@@ -7,6 +7,8 @@ import './App.css';
 import Navbar from "./navbar";
 import DisplayProducts from "./displayProducts";
 import Cart from "./cart";
+import Checkout from "./Checkout";
+import SignIn from "./SignIn";
 import products from "./products";
 
 class App extends Component {
@@ -14,7 +16,9 @@ class App extends Component {
     super(props);
     this.state = {
       siteName: "Shop to React",
-      products: products
+      products: products,
+      isLoggedIn: false,
+      user: null
     };
   }
 
@@ -31,11 +35,28 @@ class App extends Component {
       .reduce((total, current) => total + current, 0);
   }
 
+  handleLogin = (response) => {
+    if (response.accessToken) {
+      this.setState({ isLoggedIn: true, user: response });
+    }
+  }
+
+  handleLogout = () => {
+    this.setState({ isLoggedIn: false, user: null });
+  }
+
   render() {
     return (
       <Router>
         <div className="App">
-          <Navbar siteName={this.state.siteName} totalItems={this.getTotalQuantity()} />
+          <Navbar 
+            siteName={this.state.siteName} 
+            totalItems={this.getTotalQuantity()} 
+            isLoggedIn={this.state.isLoggedIn} 
+            user={this.state.user} 
+            onLogout={this.handleLogout}
+            onLogin={this.handleLogin}
+          />
           <Routes>
             <Route 
               path="/" 
@@ -43,7 +64,18 @@ class App extends Component {
             />
             <Route 
               path="/cart" 
-              element={<Cart products={this.state.products} />} 
+              element={<Cart 
+                products={this.state.products} 
+                isLoggedIn={this.state.isLoggedIn} 
+              />} 
+            />
+            <Route 
+              path="/signin" 
+              element={<SignIn onLogin={this.handleLogin} />} 
+            />
+            <Route 
+              path="/checkout" 
+              element={<Checkout />} 
             />
           </Routes>
         </div>

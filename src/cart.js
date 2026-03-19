@@ -1,13 +1,26 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Cart = ({ products }) => {
+const Cart = ({ products, isLoggedIn }) => {
   const cartItems = products.filter(product => product.value > 0);
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (isLoggedIn) {
+      navigate('/checkout');
+    } else {
+      navigate('/signin');
+    }
+  };
 
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Shopping Cart</h2>
       {cartItems.length === 0 ? (
-        <p className="text-muted">Your cart is empty</p>
+        <React.Fragment>
+          <p className="text-muted">Your cart is empty</p>
+          <Link to="/" className="btn btn-primary">Continue Shopping</Link>
+        </React.Fragment>
       ) : (
         <div>
           {cartItems.map(product => (
@@ -28,6 +41,7 @@ const Cart = ({ products }) => {
               </div>
             </div>
           ))}
+          <button className="btn btn-success mt-3" onClick={handleCheckout}>Check Out</button>
         </div>
       )}
     </div>
