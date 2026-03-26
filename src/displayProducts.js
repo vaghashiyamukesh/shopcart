@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const DisplayProducts = ({ products, handleQuantityChange }) => {
   const [show, setShow] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [sortMode, setSortMode] = useState('normal');
 
   const handleShow = (product) => {
     setSelectedProduct(product);
@@ -29,9 +30,40 @@ const DisplayProducts = ({ products, handleQuantityChange }) => {
     }
   };
 
+  const handleSortChange = (e) => {
+    setSortMode(e.target.value);
+  };
+
+  const sortedProducts = [...products];
+  switch (sortMode) {
+    case 'lowest':
+      sortedProducts.sort((a, b) => a.price - b.price);
+      break;
+    case 'highest':
+      sortedProducts.sort((a, b) => b.price - a.price);
+      break;
+    default:
+      sortedProducts.sort((a, b) => a.id - b.id);
+  }
+
   return (
     <div className="container mt-4">
-      {products.map(product => (
+      <div className="row mb-3">
+        <div className="col-md-3">
+          <label htmlFor="sortSelect" className="form-label">Sort by</label>
+          <select
+            id="sortSelect"
+            className="form-select"
+            value={sortMode}
+            onChange={handleSortChange}
+          >
+            <option value="normal">Normal</option>
+            <option value="lowest">Lowest</option>
+            <option value="highest">Highest</option>
+          </select>
+        </div>
+      </div>
+      {sortedProducts.map(product => (
         <div key={product.id} className="row border p-3 mb-3 align-items-center">
           <div className="col-md-3">
             <img
@@ -44,6 +76,7 @@ const DisplayProducts = ({ products, handleQuantityChange }) => {
           <div className="col-md-4">
             <h5>{product.desc}</h5>
             <p className="text-muted">Rating: ⭐ {product.ratings}</p>
+            <p className="text-success fw-bold">Price: ${product.price?.toFixed(2) ?? '0.00'}</p>
           </div>
           <div className="col-md-5 d-flex align-items-center">
             <button
